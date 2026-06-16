@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Cost Allocation Flow Analysis</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/theme/white.css">
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.min.js"></script>
+    <style>
+        .reveal h1 { font-size: 2.5em; color: #2c3e50; }
+        .reveal h2 { font-size: 2em; color: #34495e; }
+        .reveal h3 { font-size: 1.5em; color: #7f8c8d; }
+        .reveal ul { font-size: 0.9em; }
+        .reveal li { margin: 0.5em 0; }
+        .highlight { color: #e74c3c; font-weight: bold; }
+        .success { color: #27ae60; }
+        .info { color: #3498db; }
+        .warning { color: #f39c12; }
+        .two-column { display: flex; gap: 2em; }
+        .column { flex: 1; }
+        .small-text { font-size: 0.8em; }
+        .very-small-text { font-size: 0.7em; }
+        .box { 
+            border: 2px solid #3498db; 
+            padding: 1em; 
+            border-radius: 8px; 
+            margin: 1em 0;
+            background-color: #ecf0f1;
+        }
+        .mermaid { 
+            background-color: white; 
+            padding: 1em;
+            border-radius: 8px;
+        }
+        table { 
+            font-size: 0.8em; 
+            border-collapse: collapse; 
+            width: 100%; 
+        }
+        th { 
+            background-color: #3498db; 
+            color: white; 
+            padding: 0.5em; 
+        }
+        td { 
+            padding: 0.5em; 
+            border: 1px solid #bdc3c7; 
+        }
+        tr:nth-child(even) { background-color: #ecf0f1; }
+        .flow-step {
+            display: inline-block;
+            padding: 0.5em 1em;
+            margin: 0.3em;
+            background-color: #3498db;
+            color: white;
+            border-radius: 5px;
+        }
+        .arrow { 
+            display: inline-block; 
+            margin: 0 0.5em;
+            font-size: 1.5em;
+            color: #e74c3c;
+        }
+    </style>
+</head>
+<body>
+    <div class="reveal">
+        <div class="slides">
+            
+            <!-- Slide 1: Title -->
+            <section>
+                <h1>IT Cost Allocation Flow Analysis</h1>
+                <h3>Default_Cost-06-10-2026.xlsx</h3>
+                <p style="margin-top: 2em;">
+                    <strong>Analysis Date:</strong> June 10, 2026<br>
+                    <strong>Source:</strong> Allocation Strategies Sheet<br>
+                    <strong>Total Strategies:</strong> 56
+                </p>
+            </section>
+
+            <!-- Slide 2: Executive Summary -->
+            <section>
+                <h2>Executive Summary</h2>
+                <div class="box">
+                    <p>A sophisticated <span class="highlight">IT cost allocation and chargeback system</span> with:</p>
+                    <ul>
+                        <li><span class="success">✓</span> <strong>56 distinct allocation strategies</strong></li>
+                        <li><span class="success">✓</span> <strong>8 hierarchical layers</strong> from source to destination</li>
+                        <li><span class="success">✓</span> <strong>20+ unique cost objects</strong></li>
+                        <li><span class="success">✓</span> <strong>Central hub architecture</strong> via IT Resource Towers</li>
+                        <li><span class="success">✓</span> <strong>Complex IT for IT handling</strong> with 7 allocation strategies</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 3: System Architecture Overview -->
+            <section>
+                <h2>System Architecture Overview</h2>
+                <div class="small-text">
+                    <table>
+                        <tr>
+                            <th>Layer</th>
+                            <th>Objects</th>
+                            <th>Purpose</th>
+                        </tr>
+                        <tr>
+                            <td><strong>1. Sources</strong></td>
+                            <td>Cost Source, Applications, Other Cost Pools</td>
+                            <td>Initial cost entry points</td>
+                        </tr>
+                        <tr>
+                            <td><strong>2. Transformation</strong></td>
+                            <td>Vendors, Fixed Assets, Labor, Projects</td>
+                            <td>Cost categorization & enrichment</td>
+                        </tr>
+                        <tr>
+                            <td><strong>3. Time & Labor</strong></td>
+                            <td>Time Tracking, Other Labor Allocations</td>
+                            <td>Labor cost distribution</td>
+                        </tr>
+                        <tr>
+                            <td><strong>4. Central Hub</strong></td>
+                            <td>IT Resource Towers</td>
+                            <td>Main aggregation & distribution point</td>
+                        </tr>
+                        <tr>
+                            <td><strong>5. Infrastructure</strong></td>
+                            <td>Servers, Network, End User Devices</td>
+                            <td>Infrastructure cost allocation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>6. Business Services</strong></td>
+                            <td>BS Refacturacion, BS before Splitting, BS Splitting, BS</td>
+                            <td>Service cost transformation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>7. Service Allocations</strong></td>
+                            <td>Direct & Indirect Service Allocations</td>
+                            <td>Final service cost preparation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>8. Destinations</strong></td>
+                            <td>Business Unit Allocation, Sink</td>
+                            <td>Final billing & non-billable costs</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Slide 4: High-Level Flow Diagram -->
+            <section>
+                <h2>High-Level Cost Flow</h2>
+                <div class="very-small-text">
+                    <div class="mermaid">
+graph TB
+    subgraph Sources["Layer 1: Cost Sources"]
+        CS[Cost Source]
+        APP[Applications]
+        OCP[Other Cost Pools]
+    end
+    
+    subgraph Transform["Layer 2-3: Transformation"]
+        V[Vendors]
+        L[Labor]
+        P[Projects]
+        TT[Time Tracking]
+    end
+    
+    subgraph Hub["Layer 4: Central Hub"]
+        ITRT[IT Resource Towers]
+    end
+    
+    subgraph Infra["Layer 5: Infrastructure"]
+        SRV[Servers]
+        ND[Network]
+        EUD[End User Devices]
+    end
+    
+    subgraph Services["Layer 6: Business Services"]
+        BS[Business Services]
+    end
+    
+    subgraph Final["Layer 7-8: Final Destinations"]
+        BUA[Business Unit Allocation]
+        SINK[Sink - Non-billable]
+    end
+    
+    CS --> V
+    CS --> L
+    CS --> P
+    CS --> ITRT
+    APP --> BS
+    OCP --> ITRT
+    
+    V --> L
+    V --> P
+    V --> ITRT
+    L --> TT
+    L --> P
+    TT --> ITRT
+    P --> ITRT
+    
+    ITRT --> SRV
+    ITRT --> ND
+    ITRT --> EUD
+    ITRT --> BS
+    ITRT --> SINK
+    
+    SRV --> BS
+    ND --> BS
+    EUD --> BS
+    
+    BS --> BUA
+    
+    style ITRT fill:#ff9800,stroke:#333,stroke-width:4px
+    style BUA fill:#4caf50,stroke:#333,stroke-width:2px
+    style SINK fill:#f44336,stroke:#333,stroke-width:2px
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 5: IT Resource Towers - Central Hub -->
+            <section>
+                <h2>IT Resource Towers: The Central Hub</h2>
+                <div class="two-column">
+                    <div class="column">
+                        <h3 class="info">Receives From:</h3>
+                        <ul class="small-text">
+                            <li>Cost Source (direct)</li>
+                            <li>Fixed Asset Ledger</li>
+                            <li>Labor</li>
+                            <li>Time Tracking</li>
+                            <li>Other Labor Allocations</li>
+                            <li>Projects</li>
+                            <li>Vendors</li>
+                            <li>Other Cost Pools</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3 class="warning">Distributes To:</h3>
+                        <ul class="small-text">
+                            <li>Business Services (Direct)</li>
+                            <li>Business Services Refacturacion</li>
+                            <li>Business Services before Splitting</li>
+                            <li>Servers</li>
+                            <li>Network Devices</li>
+                            <li>End User Devices</li>
+                            <li>Sink (non-billable)</li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="box" style="margin-top: 1em;">
+                    <p><strong>Key Role:</strong> Aggregates all IT costs and distributes them based on charging type, IT perimeter, and billability rules.</p>
+                </div>
+            </section>
+
+            <!-- Slide 6: Cardinality Types -->
+            <section>
+                <h2>Allocation Cardinality Types</h2>
+                <div class="small-text">
+                    <table>
+                        <tr>
+                            <th>Type</th>
+                            <th>Description</th>
+                            <th>Example</th>
+                        </tr>
+                        <tr>
+                            <td><strong>One-to-One</strong></td>
+                            <td>Direct 1:1 mapping between source and target</td>
+                            <td>Cost Source → Vendors</td>
+                        </tr>
+                        <tr>
+                            <td><strong>One-to-Many</strong></td>
+                            <td>One source distributes to multiple targets</td>
+                            <td>Labor → IT Resource Towers</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Many-to-One</strong></td>
+                            <td>Multiple sources consolidate to one target</td>
+                            <td>Business Services → Service Allocations Direct</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Many-to-Many</strong></td>
+                            <td>Complex relationships with filtering</td>
+                            <td>Applications → Business Services Splitting</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Unknown</strong></td>
+                            <td>Undefined relationships (typically Sink)</td>
+                            <td>Service Allocations Indirect → Business Unit Allocation</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Slide 7: Distribution Methods -->
+            <section>
+                <h2>Cost Distribution Methods</h2>
+                <div class="two-column small-text">
+                    <div class="column">
+                        <h3>Evenly</h3>
+                        <p>Equal distribution across all targets</p>
+                        <div class="box">
+                            <strong>Use Cases:</strong>
+                            <ul>
+                                <li>Direct charging</li>
+                                <li>Simple 1:1 mappings</li>
+                                <li>Default allocation</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="column">
+                        <h3>Weighted</h3>
+                        <p>Distribution based on specific metrics</p>
+                        <div class="box">
+                            <strong>Weighting Factors:</strong>
+                            <ul>
+                                <li><strong>Quantity:</strong> Servers, Network, Business Services</li>
+                                <li><strong>Headcount:</strong> External Labor</li>
+                                <li><strong>Hours:</strong> Time Tracking</li>
+                                <li><strong>Custom Formulas:</strong> Using SOURCE and field references</li>
+                                <li><strong>Weighting Factors:</strong> Projects, ITRT</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 8: IT for IT Complexity -->
+            <section>
+                <h2>IT for IT Allocation Strategies</h2>
+                <p class="small-text">Handling IT services consumed by IT departments - <span class="highlight">7 distinct strategies</span></p>
+                <div class="very-small-text">
+                    <table>
+                        <tr>
+                            <th>#</th>
+                            <th>Strategy</th>
+                            <th>Matching Criteria</th>
+                            <th>Scope</th>
+                        </tr>
+                        <tr>
+                            <td>1</td>
+                            <td>IT for IT Servicio by Subservice</td>
+                            <td>Unit + Service + Subservice + UoM</td>
+                            <td>Most specific</td>
+                        </tr>
+                        <tr>
+                            <td>2</td>
+                            <td>IT for IT by Service</td>
+                            <td>Unit + Service + UoM</td>
+                            <td>Broader</td>
+                        </tr>
+                        <tr>
+                            <td>3</td>
+                            <td>IT for IT by Unit</td>
+                            <td>Unit + UoM</td>
+                            <td>Even broader</td>
+                        </tr>
+                        <tr>
+                            <td>4</td>
+                            <td>IT for IT by UoM</td>
+                            <td>Unit of Measure only</td>
+                            <td>Broadest</td>
+                        </tr>
+                        <tr>
+                            <td>5</td>
+                            <td>IT for IT Servers by Un Ser Subser + Country</td>
+                            <td>Unit + Service + Subservice + UoM + Country</td>
+                            <td>Server-specific with geography</td>
+                        </tr>
+                        <tr>
+                            <td>6</td>
+                            <td>IT for IT Servers by Country</td>
+                            <td>UoM + Country</td>
+                            <td>Server-specific geographic</td>
+                        </tr>
+                        <tr>
+                            <td>7</td>
+                            <td>IT for IT Servers - Countries with only IT for IT</td>
+                            <td>Unit + Service + Subservice + UoM + Country</td>
+                            <td>Special country handling</td>
+                        </tr>
+                    </table>
+                </div>
+                <p class="small-text" style="margin-top: 1em;"><strong>Logic:</strong> Hierarchical fallback from most specific to broadest matching</p>
+            </section>
+
+            <!-- Slide 9: Key Filtering Logic -->
+            <section>
+                <h2>Key Filtering Logic</h2>
+                <div class="two-column small-text">
+                    <div class="column">
+                        <h3>Charging Type</h3>
+                        <ul>
+                            <li><strong>Servicio:</strong> Service-based charging</li>
+                            <li><strong>Refacturación:</strong> Re-billing scenarios</li>
+                            <li><strong>Overhead:</strong> Indirect costs</li>
+                        </ul>
+                        
+                        <h3 style="margin-top: 1em;">Organizational</h3>
+                        <ul>
+                            <li><strong>Is Corp:</strong> CORP vs NO CORP</li>
+                            <li><strong>Is IT Perimeter:</strong> Within IT scope</li>
+                            <li><strong>Business Unit ID:</strong> Organizational units</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3>Billability</h3>
+                        <ul>
+                            <li><strong>Is Billable:</strong> Yes/No</li>
+                            <li><strong>Is Direct Charging:</strong> Direct vs allocated</li>
+                        </ul>
+                        
+                        <h3 style="margin-top: 1em;">Technical</h3>
+                        <ul>
+                            <li><strong>Allocation Source:</strong> Tracks cost origin</li>
+                            <li><strong>Plan Type:</strong> Actuals vs other</li>
+                            <li><strong>Unit of Measure:</strong> Ensures compatibility</li>
+                        </ul>
+                        
+                        <h3 style="margin-top: 1em;">Geographic</h3>
+                        <ul>
+                            <li><strong>Country:</strong> Geographic allocation</li>
+                            <li><strong>Country to Recharge:</strong> Billing country</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 10: Special Allocation Scenarios -->
+            <section>
+                <h2>Special Allocation Scenarios</h2>
+                <div class="small-text">
+                    <h3 class="info">1. Overhead Allocation</h3>
+                    <div class="box">
+                        <p><strong>Known Unit of Measure:</strong> Distributed proportionally to Business Services with matching UoM</p>
+                        <p><strong>Unknown Unit of Measure:</strong> Distributed to services with matching Unit and Service only</p>
+                    </div>
+                    
+                    <h3 class="warning" style="margin-top: 1em;">2. Refacturacion (Re-billing)</h3>
+                    <div class="box">
+                        <p><strong>Non-IT for IT:</strong> Goes directly to Business Services</p>
+                        <p><strong>IT for IT:</strong> Routes through Business Services before Splitting or directly to Servers</p>
+                    </div>
+                    
+                    <h3 class="highlight" style="margin-top: 1em;">3. Sink Allocations (Non-billable)</h3>
+                    <div class="box">
+                        <ul>
+                            <li><strong>NO CORP:</strong> Costs outside corporate structure</li>
+                            <li><strong>No IT Perimeter:</strong> Costs outside IT scope</li>
+                            <li><strong>Not Billable:</strong> Explicitly marked as non-billable</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 11: Labor Cost Flow -->
+            <section>
+                <h2>Labor Cost Flow</h2>
+                <div class="mermaid">
+graph LR
+    CS[Cost Source] -->|Internal Labor| L[Labor - Internal]
+    CS -->|External Labor| L2[Labor - External]
+    V[Vendors] -->|Internal Labor| L
+    V -->|External Labor| L2
+    
+    L --> TT[Time Tracking]
+    L --> OLA[Other Labor Allocations]
+    L --> P[Projects]
+    
+    TT -->|Projects| P
+    TT -->|ITRT| ITRT[IT Resource Towers]
+    
+    L2 --> P
+    L2 --> ITRT
+    
+    OLA --> ITRT
+    P --> ITRT
+    
+    ITRT --> BS[Business Services]
+    
+    style L fill:#3498db
+    style L2 fill:#3498db
+    style TT fill:#9b59b6
+    style ITRT fill:#ff9800
+    style BS fill:#4caf50
+                </div>
+                <div class="box small-text" style="margin-top: 1em;">
+                    <p><strong>Key Points:</strong></p>
+                    <ul>
+                        <li>Labor costs can originate from Cost Source or Vendors</li>
+                        <li>Internal labor flows through Time Tracking for detailed allocation</li>
+                        <li>Project-related labor is tracked separately</li>
+                        <li>All labor eventually reaches IT Resource Towers for distribution</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Slide 12: Server Cost Flow -->
+            <section>
+                <h2>Server Cost Flow</h2>
+                <div class="mermaid">
+graph TB
+    ITRT[IT Resource Towers] -->|Allocate to Servers| SRV[Servers]
+    BSBS[Business Services before Splitting] -->|Servicio Type| SRV
+    BSR[Business Services Refacturacion] -->|IT for IT| SRV
+    
+    SRV -->|Not IT for IT| BS[Business Services]
+    SRV -->|IT for IT by Country| BS
+    SRV -->|IT for IT not by Country| BS
+    
+    BS -->|Direct| SAD[Service Allocations Direct]
+    BS -->|Indirect| SAI[Service Allocations Indirect]
+    
+    SAD --> BUA[Business Unit Allocation]
+    SAI --> BUA
+    
+    style SRV fill:#e74c3c
+    style ITRT fill:#ff9800
+    style BS fill:#4caf50
+    style BUA fill:#27ae60
+                </div>
+                <div class="box small-text" style="margin-top: 1em;">
+                    <p><strong>Circular Flow Note:</strong> Business Services before Splitting → Servers → Business Services creates a loop for 'Servicio' charging type. This requires careful sequencing or iteration logic.</p>
+                </div>
+            </section>
+
+            <!-- Slide 13: Data Relationship Keys -->
+            <section>
+                <h2>Data Relationship Keys</h2>
+                <div class="small-text">
+                    <p>Allocations use complex multi-dimensional key matching:</p>
+                    <table>
+                        <tr>
+                            <th>Key Type</th>
+                            <th>Components</th>
+                            <th>Purpose</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Service Hierarchy</strong></td>
+                            <td>Unit → Service → Subservice</td>
+                            <td>Match service structure</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Unit of Measure</strong></td>
+                            <td>Unit of Measure, Unit of Measure Lower</td>
+                            <td>Ensure compatible cost distribution</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Organizational</strong></td>
+                            <td>Business Unit ID, Target Business Unit</td>
+                            <td>Link organizational units</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Geographic</strong></td>
+                            <td>Country, Country to Recharge</td>
+                            <td>Geographic allocation rules</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Custom Keys</strong></td>
+                            <td>Cost Source to ITRT Key, Vendors to ITRT Key, etc.</td>
+                            <td>Specialized matching logic</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Metadata</strong></td>
+                            <td>OID Metafield, Object Identifier</td>
+                            <td>Unique object identification</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Slide 14: System Strengths -->
+            <section>
+                <h2>System Strengths</h2>
+                <div class="small-text">
+                    <div class="two-column">
+                        <div class="column">
+                            <h3 class="success">✓ Comprehensive Coverage</h3>
+                            <ul>
+                                <li>All IT cost types included</li>
+                                <li>Labor, infrastructure, services</li>
+                                <li>Projects and vendors</li>
+                            </ul>
+                            
+                            <h3 class="success" style="margin-top: 1em;">✓ Flexible Allocation</h3>
+                            <ul>
+                                <li>Multiple distribution methods</li>
+                                <li>Custom formulas supported</li>
+                                <li>Weighted and even distribution</li>
+                            </ul>
+                            
+                            <h3 class="success" style="margin-top: 1em;">✓ Clear Segregation</h3>
+                            <ul>
+                                <li>Billable vs non-billable</li>
+                                <li>IT perimeter boundaries</li>
+                                <li>Direct vs indirect costs</li>
+                            </ul>
+                        </div>
+                        <div class="column">
+                            <h3 class="success">✓ Sophisticated IT for IT</h3>
+                            <ul>
+                                <li>7 allocation strategies</li>
+                                <li>Hierarchical fallback logic</li>
+                                <li>Geographic considerations</li>
+                            </ul>
+                            
+                            <h3 class="success" style="margin-top: 1em;">✓ Geographic Awareness</h3>
+                            <ul>
+                                <li>Country-based allocation</li>
+                                <li>Cross-border re-billing</li>
+                                <li>Regional cost tracking</li>
+                            </ul>
+                            
+                            <h3 class="success" style="margin-top: 1em;">✓ Organizational Alignment</h3>
+                            <ul>
+                                <li>Business unit tracking</li>
+                                <li>Service hierarchy support</li>
+                                <li>Target unit specification</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 15: Potential Considerations -->
+            <section>
+                <h2>Potential Considerations</h2>
+                <div class="small-text">
+                    <h3 class="warning">1. Circular Dependencies</h3>
+                    <div class="box">
+                        <p><strong>Issue:</strong> Business Services before Splitting → Servers → Business Services creates a loop</p>
+                        <p><strong>Impact:</strong> May require careful sequencing or iteration logic to converge</p>
+                    </div>
+                    
+                    <h3 class="warning" style="margin-top: 1em;">2. IT for IT Complexity</h3>
+                    <div class="box">
+                        <p><strong>Issue:</strong> 7 different allocation strategies with hierarchical fallback</p>
+                        <p><strong>Impact:</strong> Requires thorough testing and documentation for maintainability</p>
+                    </div>
+                    
+                    <h3 class="warning" style="margin-top: 1em;">3. Data Quality Requirements</h3>
+                    <div class="box">
+                        <p><strong>Issue:</strong> Extensive filtering requires accurate metadata in all fields</p>
+                        <p><strong>Impact:</strong> Missing or incorrect values could break allocation chains</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 16: Performance Implications -->
+            <section>
+                <h2>Performance Implications</h2>
+                <div class="small-text">
+                    <div class="two-column">
+                        <div class="column">
+                            <h3 class="info">Complexity Factors</h3>
+                            <ul>
+                                <li><strong>Many-to-many relationships</strong> with complex filters</li>
+                                <li><strong>Custom formula calculations</strong> requiring field references</li>
+                                <li><strong>Multiple allocation passes</strong> through same objects</li>
+                                <li><strong>Nested WHERE clauses</strong> with multiple conditions</li>
+                            </ul>
+                        </div>
+                        <div class="column">
+                            <h3 class="warning">Optimization Opportunities</h3>
+                            <ul>
+                                <li>Index key matching fields</li>
+                                <li>Cache intermediate calculations</li>
+                                <li>Optimize filter evaluation order</li>
+                                <li>Consider parallel processing for independent paths</li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="box" style="margin-top: 1em;">
+                        <p><strong>Recommendation:</strong> Monitor execution time for each allocation strategy and optimize the slowest ones first.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 17: Audit Trail Considerations -->
+            <section>
+                <h2>Audit Trail & Traceability</h2>
+                <div class="small-text">
+                    <h3 class="info">Tracking Mechanisms</h3>
+                    <div class="box">
+                        <ul>
+                            <li><strong>Allocation Source field:</strong> Tracks origin of costs through the flow</li>
+                            <li><strong>Driver field:</strong> Identifies the allocation strategy used</li>
+                            <li><strong>User Description:</strong> Human-readable allocation explanation</li>
+                            <li><strong>Allocation Description:</strong> Detailed technical description</li>
+                        </ul>
+                    </div>
+                    
+                    <h3 class="warning" style="margin-top: 1em;">Challenges</h3>
+                    <div class="box">
+                        <ul>
+                            <li><strong>Multi-hop allocations:</strong> Costs pass through 5-8 objects before reaching final destination</li>
+                            <li><strong>Complex transformations:</strong> Weighted distributions and custom formulas make tracing difficult</li>
+                            <li><strong>IT for IT loops:</strong> Costs may cycle through multiple IT for IT strategies</li>
+                        </ul>
+                    </div>
+                    
+                    <h3 class="success" style="margin-top: 1em;">Best Practices</h3>
+                    <div class="box">
+                        <ul>
+                            <li>Maintain detailed logs of each allocation step</li>
+                            <li>Implement cost lineage tracking</li>
+                            <li>Regular reconciliation between source and destination totals</li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 18: Recommendations -->
+            <section>
+                <h2>Recommendations for Usage</h2>
+                <div class="small-text">
+                    <ol>
+                        <li class="box">
+                            <strong>Maintain Master Data Quality</strong>
+                            <p>The system relies heavily on accurate metadata. Implement data validation rules and regular quality checks.</p>
+                        </li>
+                        <li class="box">
+                            <strong>Monitor Sink Allocations</strong>
+                            <p>Track non-billable costs flowing to Sink. These represent optimization opportunities.</p>
+                        </li>
+                        <li class="box">
+                            <strong>Document IT for IT Rules</strong>
+                            <p>The hierarchical fallback logic should be well understood by all stakeholders. Create detailed documentation.</p>
+                        </li>
+                        <li class="box">
+                            <strong>Validate Circular Flows</strong>
+                            <p>Ensure Business Services ↔ Servers loop converges properly. Implement iteration limits and convergence checks.</p>
+                        </li>
+                        <li class="box">
+                            <strong>Test Edge Cases</strong>
+                            <p>Complex filtering may create unexpected allocation paths. Comprehensive testing is essential.</p>
+                        </li>
+                    </ol>
+                </div>
+            </section>
+
+            <!-- Slide 19: Key Metrics to Monitor -->
+            <section>
+                <h2>Key Metrics to Monitor</h2>
+                <div class="small-text">
+                    <table>
+                        <tr>
+                            <th>Metric</th>
+                            <th>Purpose</th>
+                            <th>Target</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Total Cost In vs Out</strong></td>
+                            <td>Ensure no cost is lost in allocation</td>
+                            <td>100% reconciliation</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sink Allocation %</strong></td>
+                            <td>Track non-billable costs</td>
+                            <td>Minimize over time</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IT for IT Allocation %</strong></td>
+                            <td>Monitor internal IT consumption</td>
+                            <td>Benchmark against industry</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Allocation Strategy Execution Time</strong></td>
+                            <td>Identify performance bottlenecks</td>
+                            <td>< 5 seconds per strategy</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Failed Allocations</strong></td>
+                            <td>Track data quality issues</td>
+                            <td>0 failures</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Business Unit Coverage</strong></td>
+                            <td>Ensure all units receive allocations</td>
+                            <td>100% coverage</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Overhead Distribution</strong></td>
+                            <td>Monitor indirect cost allocation</td>
+                            <td>Fair and transparent</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Slide 20: Allocation Strategy Summary -->
+            <section>
+                <h2>Allocation Strategy Summary</h2>
+                <div class="very-small-text">
+                    <table>
+                        <tr>
+                            <th>Category</th>
+                            <th>Count</th>
+                            <th>Key Strategies</th>
+                        </tr>
+                        <tr>
+                            <td><strong>Cost Source Allocations</strong></td>
+                            <td>7</td>
+                            <td>To Vendors, Fixed Assets, Labor (Internal/External), Projects, ITRT</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Vendor Allocations</strong></td>
+                            <td>4</td>
+                            <td>To Labor (Internal/External), Projects, ITRT</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Labor Allocations</strong></td>
+                            <td>4</td>
+                            <td>To ITRT, Other Labor Allocations, Time Tracking, Projects</td>
+                        </tr>
+                        <tr>
+                            <td><strong>ITRT Allocations</strong></td>
+                            <td>11</td>
+                            <td>To Business Services, Servers, Network, End User Devices, Sink</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Infrastructure Allocations</strong></td>
+                            <td>6</td>
+                            <td>Servers, Network Devices, End User Devices to Business Services</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Business Services Allocations</strong></td>
+                            <td>13</td>
+                            <td>Refacturacion, before Splitting, Splitting, final Business Services</td>
+                        </tr>
+                        <tr>
+                            <td><strong>IT for IT Allocations</strong></td>
+                            <td>7</td>
+                            <td>By Subservice, Service, Unit, UoM, Country variations</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Final Allocations</strong></td>
+                            <td>4</td>
+                            <td>Service Allocations Direct/Indirect to Business Unit Allocation</td>
+                        </tr>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Slide 21: Complete Flow Visualization -->
+            <section>
+                <h2>Complete Allocation Flow</h2>
+                <div class="very-small-text">
+                    <div class="mermaid">
+graph TB
+    CS[Cost Source]
+    APP[Applications]
+    OCP[Other Cost Pools]
+    V[Vendors]
+    FAL[Fixed Asset Ledger]
+    L[Labor]
+    P[Projects]
+    TT[Time Tracking]
+    OLA[Other Labor Allocations]
+    ITRT[IT Resource Towers]
+    SRV[Servers]
+    ND[Network Devices]
+    EUD[End User Devices]
+    BSR[Business Services Refacturacion]
+    BSBS[Business Services before Splitting]
+    BSS[Business Services Splitting]
+    BS[Business Services]
+    SAD[Service Allocations Direct]
+    SAI[Service Allocations Indirect]
+    BUA[Business Unit Allocation]
+    SINK[Sink]
+    
+    CS --> V
+    CS --> FAL
+    CS --> L
+    CS --> P
+    CS --> ITRT
+    APP --> BSS
+    OCP --> ITRT
+    V --> L
+    V --> P
+    V --> ITRT
+    FAL --> ITRT
+    L --> ITRT
+    L --> OLA
+    L --> TT
+    L --> P
+    TT --> P
+    TT --> ITRT
+    OLA --> ITRT
+    P --> ITRT
+    ITRT --> BS
+    ITRT --> BSR
+    ITRT --> BSBS
+    ITRT --> SRV
+    ITRT --> ND
+    ITRT --> EUD
+    ITRT --> SINK
+    SRV --> BS
+    ND --> BSBS
+    EUD --> BSBS
+    BSR --> BS
+    BSR --> BSBS
+    BSR --> SRV
+    BSBS --> BSS
+    BSBS --> SRV
+    BSS --> BS
+    BS --> SAD
+    BS --> SAI
+    SAD --> BUA
+    SAI --> BUA
+    
+    style CS fill:#e1f5ff
+    style APP fill:#e1f5ff
+    style OCP fill:#e1f5ff
+    style ITRT fill:#ff9800
+    style BUA fill:#4caf50
+    style SINK fill:#f44336
+                    </div>
+                </div>
+            </section>
+
+            <!-- Slide 22: Conclusion -->
+            <section>
+                <h2>Conclusion</h2>
+                <div class="box">
+                    <h3 class="success">System Assessment</h3>
+                    <p>The IT cost allocation system is <strong>comprehensive and sophisticated</strong>, designed to handle complex enterprise IT cost distribution scenarios.</p>
+                </div>
+                
+                <div class="two-column small-text" style="margin-top: 1em;">
+                    <div class="column">
+                        <h3 class="success">Strengths</h3>
+                        <ul>
+                            <li>Complete cost coverage</li>
+                            <li>Flexible allocation methods</li>
+                            <li>Clear billability rules</li>
+                            <li>Geographic awareness</li>
+                            <li>Sophisticated IT for IT handling</li>
+                        </ul>
+                    </div>
+                    <div class="column">
+                        <h3 class="warning">Areas for Attention</h3>
+                        <ul>
+                            <li>Data quality critical</li>
+                            <li>Circular flow management</li>
+                            <li>Performance optimization</li>
+                            <li>Audit trail complexity</li>
+                            <li>Documentation maintenance</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="box" style="margin-top: 1em;">
+                    <p><strong>Overall:</strong> With proper data governance and monitoring, this system provides a robust foundation for IT cost allocation and chargeback.</p>
+                </div>
+            </section>
+
+            <!-- Slide 23: Questions & Next Steps -->
+            <section>
+                <h2>Questions & Next Steps</h2>
+                <div class="small-text">
+                    <h3 class="info">Potential Next Steps</h3>
+                    <div class="box">
+                        <ol>
+                            <li><strong>Data Quality Assessment:</strong> Audit master data completeness and accuracy</li>
+                            <li><strong>Performance Testing:</strong> Measure execution time for each allocation strategy</li>
+                            <li><strong>Documentation:</strong> Create detailed user guides for IT for IT logic</li>
+                            <li><strong>Validation:</strong> Implement reconciliation checks at each layer</li>
+                            <li><strong>Optimization:</strong> Identify and optimize bottleneck allocations</li>
+                            <li><strong>Training:</strong> Educate stakeholders on allocation methodology</li>
+                        </ol>
+                    </div>
+                    
+                    <div style="margin-top: 2em; text-align: center;">
+                        <h3>Thank You!</h3>
+                        <p style="margin-top: 1em;">
+                            <strong>Source File:</strong> Default_Cost-06-10-2026.xlsx<br>
+                            <strong>Analysis Date:</strong> June 10, 2026
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/reveal.js@4.5.0/dist/reveal.js"></script>
+    <script>
+        // Initialize Reveal.js
+        Reveal.initialize({
+            hash: true,
+            slideNumber: true,
+            transition: 'slide',
+            width: 1280,
+            height: 720,
+            margin: 0.04,
+            center: true,
+            controls: true,
+            progress: true,
+            history: true,
+            overview: true,
+            touch: true,
+            loop: false,
+            rtl: false,
+            navigationMode: 'default',
+            shuffle: false,
+            fragments: true,
+            fragmentInURL: true,
+            embedded: false,
+            help: true,
+            pause: true,
+            showNotes: false,
+            autoPlayMedia: null,
+            preloadIframes: null,
+            autoAnimate: true,
+            autoAnimateMatcher: null,
+            autoAnimateEasing: 'ease',
+            autoAnimateDuration: 1.0,
+            autoAnimateUnmatched: true,
+            autoSlide: 0,
+            keyboard: true,
+            disableLayout: false,
+            pdfMaxPagesPerSlide: 1,
+            pdfSeparateFragments: true,
+            pdfPageHeightOffset: -1,
+            viewDistance: 3,
+            mobileViewDistance: 2,
+            display: 'block',
+            hideInactiveCursor: true,
+            hideCursorTime: 5000
+        });
+
+        // Initialize Mermaid
+        mermaid.initialize({ 
+            startOnLoad: true,
+            theme: 'default',
+            flowchart: {
+                useMaxWidth: true,
+                htmlLabels: true,
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>

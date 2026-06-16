@@ -1,0 +1,537 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IT Cost Allocation Model - Interactive Diagram</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+        }
+        
+        #container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 20px;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #7f8c8d;
+            margin-bottom: 20px;
+        }
+        
+        #graph {
+            width: 100%;
+            height: 800px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            background-color: #fafafa;
+        }
+        
+        .node {
+            cursor: pointer;
+            stroke: #fff;
+            stroke-width: 2px;
+        }
+        
+        .node text {
+            font-size: 11px;
+            font-weight: 500;
+            pointer-events: none;
+            text-anchor: middle;
+            fill: #333;
+        }
+        
+        .link {
+            fill: none;
+            stroke: #999;
+            stroke-opacity: 0.6;
+            stroke-width: 1.5px;
+        }
+        
+        .link.highlighted {
+            stroke: #e74c3c;
+            stroke-width: 3px;
+            stroke-opacity: 1;
+        }
+        
+        .node.highlighted {
+            stroke: #e74c3c;
+            stroke-width: 4px;
+        }
+        
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #ecf0f1;
+            border-radius: 4px;
+        }
+        
+        .legend-item {
+            display: inline-block;
+            margin-right: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .legend-color {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            margin-right: 5px;
+            vertical-align: middle;
+            border: 2px solid #fff;
+        }
+        
+        .controls {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        button {
+            padding: 10px 20px;
+            margin: 0 5px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        button:hover {
+            background-color: #2980b9;
+        }
+        
+        .info-panel {
+            margin-top: 20px;
+            padding: 15px;
+            background-color: #e8f4f8;
+            border-left: 4px solid #3498db;
+            border-radius: 4px;
+            display: none;
+        }
+        
+        .info-panel.active {
+            display: block;
+        }
+        
+        .info-panel h3 {
+            margin-top: 0;
+            color: #2c3e50;
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-box {
+            background-color: white;
+            padding: 15px;
+            border-radius: 4px;
+            text-align: center;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .stat-number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #3498db;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #7f8c8d;
+            margin-top: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>IT Cost Allocation Model</h1>
+        <p class="subtitle">Interactive Network Diagram - Default_Cost-06-10-2026.xlsx</p>
+        
+        <div class="controls">
+            <button onclick="resetView()">Reset View</button>
+            <button onclick="toggleLabels()">Toggle Labels</button>
+            <button onclick="showStats()">Show Statistics</button>
+        </div>
+        
+        <div id="graph"></div>
+        
+        <div class="legend">
+            <strong>Legend:</strong><br><br>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #e1f5ff;"></span>
+                <span>Source Objects</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #fff3e0;"></span>
+                <span>IT Resource Towers (Hub)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #f3e5f5;"></span>
+                <span>Business Services</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #ffebee;"></span>
+                <span>Infrastructure</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #c8e6c9;"></span>
+                <span>Final Destinations</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #ffcdd2;"></span>
+                <span>Sink (Non-billable)</span>
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background-color: #b3e5fc;"></span>
+                <span>Intermediate Objects</span>
+            </div>
+        </div>
+        
+        <div id="info-panel" class="info-panel">
+            <h3>Selected Node: <span id="node-name"></span></h3>
+            <p><strong>Type:</strong> <span id="node-type"></span></p>
+            <p><strong>Incoming Connections:</strong> <span id="node-in"></span></p>
+            <p><strong>Outgoing Connections:</strong> <span id="node-out"></span></p>
+        </div>
+        
+        <div class="stats">
+            <div class="stat-box">
+                <div class="stat-number">56</div>
+                <div class="stat-label">Allocation Strategies</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">20</div>
+                <div class="stat-label">Unique Objects</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Allocation Layers</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-number">7</div>
+                <div class="stat-label">IT for IT Strategies</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data structure for the allocation model
+        const nodes = [
+            // Layer 1: Sources
+            { id: 'Cost Source', group: 'source', layer: 1 },
+            { id: 'Applications', group: 'source', layer: 1 },
+            { id: 'Other Cost Pools', group: 'source', layer: 1 },
+            
+            // Layer 2: Initial Transformation
+            { id: 'Vendors', group: 'intermediate', layer: 2 },
+            { id: 'Fixed Asset Ledger', group: 'intermediate', layer: 2 },
+            { id: 'Labor', group: 'intermediate', layer: 2 },
+            { id: 'Projects', group: 'intermediate', layer: 2 },
+            
+            // Layer 3: Time & Labor
+            { id: 'Time Tracking', group: 'intermediate', layer: 3 },
+            { id: 'Other Labor Allocations', group: 'intermediate', layer: 3 },
+            
+            // Layer 4: Central Hub
+            { id: 'IT Resource Towers', group: 'hub', layer: 4 },
+            
+            // Layer 5: Infrastructure
+            { id: 'Servers', group: 'infrastructure', layer: 5 },
+            { id: 'Network Devices', group: 'infrastructure', layer: 5 },
+            { id: 'End User Devices', group: 'infrastructure', layer: 5 },
+            
+            // Layer 6: Business Services
+            { id: 'Business Services Refacturacion', group: 'business', layer: 6 },
+            { id: 'Business Services before Splitting', group: 'business', layer: 6 },
+            { id: 'Business Services Splitting', group: 'business', layer: 6 },
+            { id: 'Business Services', group: 'business', layer: 6 },
+            
+            // Layer 7: Service Allocations
+            { id: 'Service Allocations Direct', group: 'intermediate', layer: 7 },
+            { id: 'Service Allocations Indirect', group: 'intermediate', layer: 7 },
+            
+            // Layer 8: Final Destinations
+            { id: 'Business Unit Allocation', group: 'destination', layer: 8 },
+            { id: 'Sink', group: 'sink', layer: 8 }
+        ];
+
+        const links = [
+            // Cost Source flows
+            { source: 'Cost Source', target: 'Vendors' },
+            { source: 'Cost Source', target: 'Fixed Asset Ledger' },
+            { source: 'Cost Source', target: 'Labor' },
+            { source: 'Cost Source', target: 'Projects' },
+            { source: 'Cost Source', target: 'IT Resource Towers' },
+            
+            // Applications flow
+            { source: 'Applications', target: 'Business Services Splitting' },
+            
+            // Other Cost Pools flow
+            { source: 'Other Cost Pools', target: 'IT Resource Towers' },
+            
+            // Vendor flows
+            { source: 'Vendors', target: 'Labor' },
+            { source: 'Vendors', target: 'Projects' },
+            { source: 'Vendors', target: 'IT Resource Towers' },
+            
+            // Fixed Asset flow
+            { source: 'Fixed Asset Ledger', target: 'IT Resource Towers' },
+            
+            // Labor flows
+            { source: 'Labor', target: 'IT Resource Towers' },
+            { source: 'Labor', target: 'Other Labor Allocations' },
+            { source: 'Labor', target: 'Time Tracking' },
+            { source: 'Labor', target: 'Projects' },
+            
+            // Time Tracking flows
+            { source: 'Time Tracking', target: 'Projects' },
+            { source: 'Time Tracking', target: 'IT Resource Towers' },
+            
+            // Other Labor Allocations flow
+            { source: 'Other Labor Allocations', target: 'IT Resource Towers' },
+            
+            // Projects flow
+            { source: 'Projects', target: 'IT Resource Towers' },
+            
+            // IT Resource Towers flows
+            { source: 'IT Resource Towers', target: 'Business Services' },
+            { source: 'IT Resource Towers', target: 'Business Services Refacturacion' },
+            { source: 'IT Resource Towers', target: 'Business Services before Splitting' },
+            { source: 'IT Resource Towers', target: 'Servers' },
+            { source: 'IT Resource Towers', target: 'Network Devices' },
+            { source: 'IT Resource Towers', target: 'End User Devices' },
+            { source: 'IT Resource Towers', target: 'Sink' },
+            
+            // Infrastructure flows
+            { source: 'Servers', target: 'Business Services' },
+            { source: 'Network Devices', target: 'Business Services before Splitting' },
+            { source: 'End User Devices', target: 'Business Services before Splitting' },
+            
+            // Business Services Refacturacion flows
+            { source: 'Business Services Refacturacion', target: 'Business Services' },
+            { source: 'Business Services Refacturacion', target: 'Business Services before Splitting' },
+            { source: 'Business Services Refacturacion', target: 'Servers' },
+            
+            // Business Services before Splitting flows
+            { source: 'Business Services before Splitting', target: 'Business Services Splitting' },
+            { source: 'Business Services before Splitting', target: 'Servers' },
+            
+            // Business Services Splitting flow
+            { source: 'Business Services Splitting', target: 'Business Services' },
+            
+            // Business Services flows
+            { source: 'Business Services', target: 'Service Allocations Direct' },
+            { source: 'Business Services', target: 'Service Allocations Indirect' },
+            
+            // Service Allocations flows
+            { source: 'Service Allocations Direct', target: 'Business Unit Allocation' },
+            { source: 'Service Allocations Indirect', target: 'Business Unit Allocation' }
+        ];
+
+        // Color mapping for node groups
+        const colorMap = {
+            'source': '#e1f5ff',
+            'hub': '#fff3e0',
+            'business': '#f3e5f5',
+            'infrastructure': '#ffebee',
+            'destination': '#c8e6c9',
+            'sink': '#ffcdd2',
+            'intermediate': '#b3e5fc'
+        };
+
+        // Set up SVG
+        const width = document.getElementById('graph').clientWidth;
+        const height = 800;
+
+        const svg = d3.select('#graph')
+            .append('svg')
+            .attr('width', width)
+            .attr('height', height);
+
+        // Add zoom behavior
+        const g = svg.append('g');
+        
+        const zoom = d3.zoom()
+            .scaleExtent([0.1, 4])
+            .on('zoom', (event) => {
+                g.attr('transform', event.transform);
+            });
+        
+        svg.call(zoom);
+
+        // Create force simulation
+        const simulation = d3.forceSimulation(nodes)
+            .force('link', d3.forceLink(links).id(d => d.id).distance(150))
+            .force('charge', d3.forceManyBody().strength(-500))
+            .force('center', d3.forceCenter(width / 2, height / 2))
+            .force('x', d3.forceX(d => (d.layer - 1) * (width / 8)).strength(0.5))
+            .force('y', d3.forceY(height / 2).strength(0.1))
+            .force('collision', d3.forceCollide().radius(50));
+
+        // Create arrow markers
+        svg.append('defs').selectAll('marker')
+            .data(['arrow'])
+            .enter().append('marker')
+            .attr('id', 'arrow')
+            .attr('viewBox', '0 -5 10 10')
+            .attr('refX', 25)
+            .attr('refY', 0)
+            .attr('markerWidth', 6)
+            .attr('markerHeight', 6)
+            .attr('orient', 'auto')
+            .append('path')
+            .attr('d', 'M0,-5L10,0L0,5')
+            .attr('fill', '#999');
+
+        // Create links
+        const link = g.append('g')
+            .selectAll('path')
+            .data(links)
+            .enter().append('path')
+            .attr('class', 'link')
+            .attr('marker-end', 'url(#arrow)');
+
+        // Create nodes
+        const node = g.append('g')
+            .selectAll('g')
+            .data(nodes)
+            .enter().append('g')
+            .call(d3.drag()
+                .on('start', dragstarted)
+                .on('drag', dragged)
+                .on('end', dragended));
+
+        node.append('circle')
+            .attr('class', 'node')
+            .attr('r', 20)
+            .attr('fill', d => colorMap[d.group])
+            .on('click', nodeClicked)
+            .on('mouseover', nodeMouseOver)
+            .on('mouseout', nodeMouseOut);
+
+        node.append('text')
+            .attr('dy', 35)
+            .text(d => d.id)
+            .style('font-size', '11px')
+            .style('text-anchor', 'middle');
+
+        // Update positions on simulation tick
+        simulation.on('tick', () => {
+            link.attr('d', d => {
+                const dx = d.target.x - d.source.x;
+                const dy = d.target.y - d.source.y;
+                const dr = Math.sqrt(dx * dx + dy * dy);
+                return `M${d.source.x},${d.source.y}A${dr},${dr} 0 0,1 ${d.target.x},${d.target.y}`;
+            });
+
+            node.attr('transform', d => `translate(${d.x},${d.y})`);
+        });
+
+        // Drag functions
+        function dragstarted(event, d) {
+            if (!event.active) simulation.alphaTarget(0.3).restart();
+            d.fx = d.x;
+            d.fy = d.y;
+        }
+
+        function dragged(event, d) {
+            d.fx = event.x;
+            d.fy = event.y;
+        }
+
+        function dragended(event, d) {
+            if (!event.active) simulation.alphaTarget(0);
+            d.fx = null;
+            d.fy = null;
+        }
+
+        // Node interaction functions
+        function nodeClicked(event, d) {
+            const incomingLinks = links.filter(l => l.target.id === d.id);
+            const outgoingLinks = links.filter(l => l.source.id === d.id);
+            
+            document.getElementById('node-name').textContent = d.id;
+            document.getElementById('node-type').textContent = d.group.charAt(0).toUpperCase() + d.group.slice(1);
+            document.getElementById('node-in').textContent = incomingLinks.length;
+            document.getElementById('node-out').textContent = outgoingLinks.length;
+            document.getElementById('info-panel').classList.add('active');
+            
+            // Highlight connected nodes and links
+            link.classed('highlighted', l => 
+                l.source.id === d.id || l.target.id === d.id
+            );
+            
+            node.select('circle').classed('highlighted', n => 
+                n.id === d.id || 
+                incomingLinks.some(l => l.source.id === n.id) ||
+                outgoingLinks.some(l => l.target.id === n.id)
+            );
+        }
+
+        function nodeMouseOver(event, d) {
+            d3.select(this).attr('r', 25);
+        }
+
+        function nodeMouseOut(event, d) {
+            d3.select(this).attr('r', 20);
+        }
+
+        // Control functions
+        function resetView() {
+            svg.transition().duration(750).call(
+                zoom.transform,
+                d3.zoomIdentity
+            );
+            link.classed('highlighted', false);
+            node.select('circle').classed('highlighted', false);
+            document.getElementById('info-panel').classList.remove('active');
+        }
+
+        let labelsVisible = true;
+        function toggleLabels() {
+            labelsVisible = !labelsVisible;
+            node.selectAll('text').style('display', labelsVisible ? 'block' : 'none');
+        }
+
+        function showStats() {
+            alert(
+                'IT Cost Allocation Model Statistics:\n\n' +
+                '• Total Allocation Strategies: 56\n' +
+                '• Unique Cost Objects: 20\n' +
+                '• Allocation Layers: 8\n' +
+                '• IT for IT Strategies: 7\n' +
+                '• Source Objects: 3\n' +
+                '• Intermediate Objects: 9\n' +
+                '• Infrastructure Objects: 3\n' +
+                '• Business Service Objects: 4\n' +
+                '• Final Destinations: 2\n\n' +
+                'Central Hub: IT Resource Towers\n' +
+                'Main Destination: Business Unit Allocation'
+            );
+        }
+
+        // Initial message
+        console.log('IT Cost Allocation Model loaded successfully');
+        console.log('Click on nodes to see details and highlight connections');
+    </script>
+</body>
+</html>
